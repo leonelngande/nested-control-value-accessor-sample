@@ -1,0 +1,26 @@
+:host ::ng-deep quill-editor {
+  .ql-tooltip {
+    left: -5.5px !important; // push the tooltip more to the right so it aligns with the input box
+    width: fit-content;
+    z-index: 1;
+  }
+}
+
+quill-editor.form-control {
+  padding: 0;
+  ::ng-deep {
+    .ql-container {
+      padding-left: 0.1em;
+      padding-right: 0.1em;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  ::ng-deep {
+    .ql-tooltip[data-mode=formula]::before {
+      // make the Enter formula text occupy the full width so the input box and Save button move down
+      display: block;
+    }
+  }
+}

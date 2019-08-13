@@ -1,0 +1,24 @@
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="closeModal('no')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <p class="m-md-bottom">
+    {{ modalBody }}
+  </p>
+  <!--<div class="x-small-space"></div>-->
+</div>
+<div class="modal-footer">
+  <div class="row">
+    <button (click)="closeModal('no')"
+            type="button" class="btn btn-secondary btn-xs btn-reject m-0">
+      {{ cancelButtonText }}
+    </button>&nbsp;
+    <button (click)="closeModal('yes')"
+            type="button" class="btn btn-primary btn-xs btn-accept m-0">
+      {{ confirmButtonText }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<label *ngIf="label" for="value">
+  {{ label }}
+</label>
+<quill-editor #editor [readOnly]="formOperation === 'view'"
+              class="form-control p-1"
+              [theme]="theme"
+              [modules]="modules"
+              [placeholder]="placeholder"
+              name="value"
+              [(ngModel)]="value"
+              id="value"
+              (ngModelChange)="onModelChange($event)"
+              [sanitize]="sanitize">
+
+</quill-editor>

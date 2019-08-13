@@ -1,0 +1,39 @@
+<form novalidate [formGroup]="form" (submit)="submit(form.value)">
+
+  <div *ngIf="showMessages.error && errors && errors.length > 0 && !submitted"
+       class="alert alert-danger" role="alert">
+    <div><strong>Oops!</strong></div>
+    <div *ngFor="let error of errors">{{ error }}</div>
+  </div>
+  <div *ngIf="showMessages.success && messages && messages.length > 0 && !submitted"
+       class="alert alert-success" role="alert">
+    <div><strong i18n="@@hooraySuccess">Success!</strong></div>
+    <div *ngFor="let message of messages">{{ message }}</div>
+  </div>
+
+  <div class="row">
+
+    <div class="col-md-12">
+      <xc-editor formControlName="choice"
+                              [label]="'Choice *'">
+
+      </xc-editor>
+      <small class="form-text error" *ngIf="!choice.valid && choice.touched && choice.errors?.required">
+        Choice is required.
+      </small>
+    </div>
+
+  </div>
+
+  <div class="row" *ngIf="canShowSubmitButton">
+    <div class="col-md-12 text-right">
+      <button type="submit"
+              [class.btn-pulse]="submitted"
+              [disabled]="!form.valid || submitted"
+              nbButton>
+        Save
+      </button>
+    </div>
+  </div>
+
+</form>

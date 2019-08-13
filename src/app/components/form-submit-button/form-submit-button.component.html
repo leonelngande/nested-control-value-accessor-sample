@@ -1,0 +1,19 @@
+<ng-container *ngIf="form">
+
+  <div class="text-right">
+
+    <button type="button"
+            *ngIf="leftButtonText?.length"
+            (click)="leftButtonClicked()">
+      {{ leftButtonText }}
+    </button>&nbsp;
+
+    <button type="submit"
+            [class.btn-pulse]="submitted"
+            [disabled]="!form.valid || submitted">
+      Comment
+    </button>
+
+  </div>
+
+</ng-container>

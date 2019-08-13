@@ -1,0 +1,39 @@
+<form novalidate [formGroup]="form">
+
+  <label class="label" for="choiceSelect" *ngIf="label">{{label}}</label>
+
+  <ng-select [items]="searchResult$ | async"
+             [addTag]="false" #ngSelect
+             [hideSelected]="true"
+             [trackByFn]="trackByFn"
+             [loading]="searchLoading"
+             [typeahead]="searchInput$"
+             [placeholder]="placeholder"
+             id="choiceSelect"
+             bindLabel="choice"
+             bindValue="id"
+             (change)="onModelChange($event)"
+             formControlName="id">
+
+    <!-- LABEL TEMPLATE -->
+    <ng-template ng-label-tmp let-item="item">
+      <div [innerHTML]="item.choice"></div>
+    </ng-template>
+
+    <!-- OPTION TEMPLATE -->
+    <ng-template ng-option-tmp let-item="item">
+      <div [innerHTML]="item.choice"></div>
+    </ng-template>
+
+  </ng-select>
+  <div class="row">
+    <!--<div class="col-md-12">
+      {{ngSelect?.itemsList?.items | json}}
+      <br><br>
+    </div>-->
+    <div class="col-md-12">
+      {{this.form.value | json}}
+      <br><br>
+    </div>
+  </div>
+</form>

@@ -1,13 +1,11 @@
 import {AfterViewInit, Component, Input, OnDestroy, OnInit, Optional, Self, ViewChild} from '@angular/core';
 import {NgControl} from '@angular/forms';
 import {QuillEditorComponent, QuillModules} from 'ngx-quill';
-import {untilDestroyed} from 'ngx-take-until-destroy';
-import Quill from 'quill';
 import {BaseControlValueAccessor} from '../../core/form-helpers/base-control-value-accessor';
 import {FormOperation} from '../../core/form-operation';
 
 @Component({
-  selector: 'xc-editor',
+  selector: 'app-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
 })
@@ -20,7 +18,7 @@ export class EditorComponent extends BaseControlValueAccessor<string> implements
   @Input() sanitize = true;
   @Input() modules: QuillModules = {
     // syntax: true,
-    formula: true,
+    formula: false,
     toolbar: [
       ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
       ['blockquote'],
@@ -40,8 +38,6 @@ export class EditorComponent extends BaseControlValueAccessor<string> implements
 
       ['clean'],                                         // remove formatting button
 
-      ['formula'],
-
       ['link'],                         // link and image, video
       // ['link', 'image'],                         // link and image, video
     ],
@@ -49,14 +45,16 @@ export class EditorComponent extends BaseControlValueAccessor<string> implements
 
   @Input() formOperation: FormOperation = 'create';
 
-  @ViewChild('editor') editor: QuillEditorComponent;
+  @ViewChild('editor', { static: true }) editor: QuillEditorComponent;
 
   constructor(
     @Self() @Optional() public controlDir: NgControl,
   ) {
     super();
 
-    controlDir.valueAccessor = this;
+    if (controlDir) {
+      controlDir.valueAccessor = this;
+    }
   }
 
   get control() {
@@ -67,38 +65,6 @@ export class EditorComponent extends BaseControlValueAccessor<string> implements
   }
 
   ngAfterViewInit(): void {
-  }
-
-  /**
-   * @see https://github.com/quilljs/quill/issues/1184#issuecomment-384935594
-   */
-  private stripTextFormattingOnPaste() {
-    this.editor.quillEditor.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
-      delta.ops = delta.ops.map(op => {
-        return {
-          insert: op.insert,
-        };
-      });
-      return delta;
-    });
-  }
-
-  /**
-   * @see https://github.com/quilljs/quill/issues/1184#issuecomment-384935594
-   */
-  private enableTextOnlyPasting() {
-    this.editor.quillEditor.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
-      const ops = [];
-      delta.ops.forEach(op => {
-        if (op.insert && typeof op.insert === 'string') {
-          ops.push({
-            insert: op.insert,
-          });
-        }
-      });
-      delta.ops = ops;
-      return delta;
-    });
   }
 
   /**

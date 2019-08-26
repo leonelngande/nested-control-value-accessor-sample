@@ -6,7 +6,7 @@ import {BaseControlValueAccessor} from '../../../core/form-helpers/base-control-
 import {FormOperation} from '../../../core/form-operation';
 
 @Component({
-  selector: 'xc-choice-form',
+  selector: 'app-choice-form',
   templateUrl: './choice-form.component.html',
   styleUrls: ['./choice-form.component.scss'],
 })
@@ -23,6 +23,7 @@ export class ChoiceFormComponent extends BaseControlValueAccessor<IChoice> imple
   /**
    * Form state passed into component
    */
+    // tslint:disable-next-line:variable-name
   private _formData: IChoice = null;
   @Input() set formData(formData: IChoice) {
     this._formData = formData;
@@ -49,7 +50,9 @@ export class ChoiceFormComponent extends BaseControlValueAccessor<IChoice> imple
   ) {
     super();
 
-    if (controlDir) controlDir.valueAccessor = this;
+    if (controlDir) {
+      controlDir.valueAccessor = this;
+    }
   }
 
   get control() {
@@ -80,6 +83,7 @@ export class ChoiceFormComponent extends BaseControlValueAccessor<IChoice> imple
     this.form = this.fb.group({
       id: [this.formData && this.formData.id],
       choice: [this.formData && this.formData.choice, Validators.required],
+      parent: [this.formData && this.formData.parent, Validators.required],
     });
   }
 
@@ -88,6 +92,11 @@ export class ChoiceFormComponent extends BaseControlValueAccessor<IChoice> imple
     this.submitted = true;
 
     this.onSubmit.emit(formData);
+
+    // simulate submission ended
+    setTimeout(() => {
+      this.submitted = false;
+    }, 1000);
   }
 
   get canShowSubmitButton() {

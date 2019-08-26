@@ -14,10 +14,20 @@
   <div class="row">
 
     <div class="col-md-12">
-      <xc-editor formControlName="choice"
+      <app-editor formControlName="choice"
                               [label]="'Choice *'">
 
-      </xc-editor>
+      </app-editor>
+      <small class="form-text error" *ngIf="!choice.valid && choice.touched && choice.errors?.required">
+        Choice is required.
+      </small>
+    </div>
+
+    <div class="col-md-12">
+      <app-choice-select formControlName="parent"
+                              [label]="'Select parent choice *'">
+
+      </app-choice-select>
       <small class="form-text error" *ngIf="!choice.valid && choice.touched && choice.errors?.required">
         Choice is required.
       </small>
@@ -26,11 +36,11 @@
   </div>
 
   <div class="row" *ngIf="canShowSubmitButton">
-    <div class="col-md-12 text-right">
+    <div class="col-md-12 text-right pt-2">
       <button type="submit"
+              class="btn btn-primary"
               [class.btn-pulse]="submitted"
-              [disabled]="!form.valid || submitted"
-              nbButton>
+              [disabled]="!form.valid || submitted">
         Save
       </button>
     </div>

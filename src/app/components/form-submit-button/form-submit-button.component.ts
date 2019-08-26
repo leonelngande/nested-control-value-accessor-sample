@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ControlContainer, FormGroupDirective} from '@angular/forms';
 
 @Component({
-  selector: 'xc-form-submit-button',
+  selector: 'app-form-submit-button',
   templateUrl: './form-submit-button.component.html',
   styleUrls: ['./form-submit-button.component.scss'],
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
@@ -13,7 +13,7 @@ export class FormSubmitButtonComponent implements OnInit {
 
   @Input() leftButtonText = 'Cancel';
 
-  @Output() onLeftButtonClick = new EventEmitter<boolean>();
+  @Output() leftButtonClicked = new EventEmitter<boolean>();
 
   constructor(
     private controlContainer: FormGroupDirective,
@@ -26,7 +26,7 @@ export class FormSubmitButtonComponent implements OnInit {
   ngOnInit() {
   }
 
-  leftButtonClicked() {
-    this.onLeftButtonClick.emit(true);
+  emitLeftButtonClicked() {
+    this.leftButtonClicked.emit(true);
   }
 }

@@ -1,31 +1,18 @@
-import {
-  AfterViewInit,
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Optional,
-  Output,
-  Self,
-  ViewChild,
-} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Optional, Output, Self, ViewChild,} from '@angular/core';
 import {FormBuilder, FormGroup, NgControl, Validators} from '@angular/forms';
 import {concat, Observable, of, Subject} from 'rxjs';
-import {catchError, debounceTime, distinctUntilChanged, map, switchMap, takeWhile, tap} from 'rxjs/operators';
-import {IChoice} from '../../state/choice.model';
+import {catchError, debounceTime, distinctUntilChanged, switchMap, takeWhile, tap} from 'rxjs/operators';
+import {choices, IChoice} from '../../state/choice.model';
 import {NgSelectComponent} from '@ng-select/ng-select';
 import {BaseControlValueAccessor} from '../../../core/form-helpers/base-control-value-accessor';
 import {FormOperation} from '../../../core/form-operation';
-import {fromArray} from 'rxjs/internal/observable/fromArray';
 
 @Component({
-  selector: 'xc-choice-select',
+  selector: 'app-choice-select',
   templateUrl: './choice-select.component.html',
   styleUrls: ['./choice-select.component.scss'],
 })
-export class ChoiceSelectComponent extends BaseControlValueAccessor<IChoice>
-  implements OnInit, OnDestroy, AfterViewInit {
+export class ChoiceSelectComponent extends BaseControlValueAccessor<IChoice> implements OnInit, OnDestroy {
 
   form: FormGroup;
   searchLoading = false;
@@ -34,7 +21,7 @@ export class ChoiceSelectComponent extends BaseControlValueAccessor<IChoice>
   alive = true;
   @Input() formOperation: FormOperation = 'create';
   @Input() label: string;
-  @Input() placeholder: string;
+  @Input() placeholder = 'Start typing `choice`';
   /**
    * Form state passed into component
    */
@@ -55,9 +42,9 @@ export class ChoiceSelectComponent extends BaseControlValueAccessor<IChoice>
     return this._formData;
   }
 
-  @Output() onSelect = new EventEmitter<IChoice>();
+  @Output() choiceSelected = new EventEmitter<IChoice>();
 
-  @ViewChild('ngSelect') ngSelect: NgSelectComponent;
+  @ViewChild('ngSelect', { static: true }) ngSelect: NgSelectComponent;
 
   constructor(
     @Self() @Optional() public controlDir: NgControl,
@@ -65,7 +52,9 @@ export class ChoiceSelectComponent extends BaseControlValueAccessor<IChoice>
   ) {
     super();
 
-    controlDir.valueAccessor = this;
+    if (controlDir) {
+      controlDir.valueAccessor = this;
+    }
   }
 
   get control() {
@@ -85,10 +74,6 @@ export class ChoiceSelectComponent extends BaseControlValueAccessor<IChoice>
       });
   }
 
-  ngAfterViewInit(): void {
-    // this.setSelected(this.form.value);
-  }
-
   ngOnDestroy(): void {
     this.alive = false;
   }
@@ -102,17 +87,14 @@ export class ChoiceSelectComponent extends BaseControlValueAccessor<IChoice>
 
   private search() {
     this.searchResult$ = concat(
-      of([this.formData]), // default items
+      of(this.defaultSearchValue()), // default items
       this.searchInput$.pipe(
         debounceTime(200),
         distinctUntilChanged(),
         tap(() => this.searchLoading = true),
         switchMap(term => {
-            return fromArray(['test', 'test'])
+            return of(choices)
               .pipe(
-                map((res) => {
-                  return res;
-                }),
                 catchError(() => of([])), // empty list on error
                 tap(() => this.searchLoading = false),
               );
@@ -137,7 +119,6 @@ export class ChoiceSelectComponent extends BaseControlValueAccessor<IChoice>
     } else {
       this.form.enable();
     }
-    // this.ngSelect.setDisabledState(isDisabled);
   }
 
   public writeValue(obj: IChoice): void {
@@ -146,15 +127,18 @@ export class ChoiceSelectComponent extends BaseControlValueAccessor<IChoice>
   }
 
   private get choice() {
-    return this.form.get('choice.model.ts');
+    return this.form.get('choice');
   }
 
   onModelChange($event) {
-    console.info('choice select model changed ', $event);
     // update choice value since it has no formControl binding in the template
-    this.onSelect.emit($event);
+    this.choiceSelected.emit($event);
     this.choice.setValue($event && $event.choice);
     this.onChange($event);
     this.onTouched();
+  }
+
+  private defaultSearchValue(): IChoice[] {
+    return this.formData ? [this.formData] : [];
   }
 }

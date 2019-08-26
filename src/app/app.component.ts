@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'nested-control-value-accessor-sample';
+  title = 'Nested Control Value Accessor Sample';
 }

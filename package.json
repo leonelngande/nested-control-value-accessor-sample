@@ -7,7 +7,9 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build-github-deploy": "ng build --prod --base-href https://leonelngande.github.io/nested-control-value-accessor-sample/",
+    "deploy-github": "ngh --dir=dist/nested-control-value-accessor-sample"
   },
   "private": true,
   "dependencies": {
